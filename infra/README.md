@@ -3,8 +3,6 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
-- [Forking the Repository](#forking-the-repository)
-- [Terraform State Management](#terraform-state-management)
 - [Resource Components](#resource-components)
 - [Deployment Steps](#deployment-steps)
 - [Understanding the Terraform Configuration Files](#understanding-the-terraform-configuration-files)
@@ -19,44 +17,56 @@ This repository contains Terraform code to deploy an Azure-based Echo Brief solu
 Before you start, ensure you have:
 - [Terraform](https://www.terraform.io/downloads.html) installed locally
 - Access to an Azure subscription
-- Azure CLI installed and configured
+- [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed and configured
 - A GitHub account (if you plan to fork the repository)
 
-## Create Terrafom Storage Account
+## Create a Terrafom Resource Group, Storage Account and Container
 
-### Login to Azure (if not already logged in)
+#### Login to Azure (if not already logged in)
+```powershell
 az login
+```
 
-### Create the resource group named 'terraform'
+#### Create the resource group named 'terraform'
+```powershell
 az group create --name terraform --location eastus
+```
 
-
-
-#### UNCOMMENT FOR WINDOWS:
+#### Create a random suffix:
+```powershell
 $RANDOM_SUFFIX = [System.Guid]::NewGuid().ToString().Substring(0,4)
-
-# Create the storage account with random suffix
-$STORAGE_ACCOUNT = "terraform$RANDOM_SUFFIX"
-echo "Creating storage account: $STORAGE_ACCOUNT"
-az storage account create --name $STORAGE_ACCOUNT --resource-group terraform --sku Standard_LRS --encryption-services blob
-$ACCOUNT_KEY=$(az storage account keys list --resource-group terraform --account-name $STORAGE_ACCOUNT --query '[0].value' -o tsv)
-
-
-#### UNCOMMENT FOR LINUX:
-RANDOM_SUFFIX=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 4 | head -n 1)
+```
+> [!NOTE]
+> Users deploying with **Linux** should use this uncomment:
+>```bash
+>RANDOM_SUFFIX=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 4 | head -n 1)
+>```
 
 #### Create the storage account with random suffix
+```powershell
 STORAGE_ACCOUNT="terraform${RANDOM_SUFFIX}"
+```
+
+```powershell
 echo "Creating storage account: $STORAGE_ACCOUNT"
+```
+
+```powershell
 az storage account create --name $STORAGE_ACCOUNT --resource-group terraform --sku Standard_LRS --encryption-services blob
+```
+```powershell
 ACCOUNT_KEY=$(az storage account keys list --resource-group terraform --account-name $STORAGE_ACCOUNT --query '[0].value' -o tsv)
+```
 
-
-# Create the container named 'tfstate'
+#### Create the container named 'tfstate'
+```powershell
 az storage container create --name tfstate --account-name $STORAGE_ACCOUNT --account-key $ACCOUNT_KEY
+```
 
-# Output the storage account name for future reference
+#### Output the storage account name for future reference
+```powershell
 echo "Storage account created: $STORAGE_ACCOUNT"
+```
 
 ## Update backend.tf
 
