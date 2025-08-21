@@ -19,7 +19,7 @@ This repository contains Terraform code to deploy an Azure-based Echo Brief solu
 Before you start, ensure you have:
 - [Terraform](https://www.terraform.io/downloads.html) installed locally
 - Access to an Azure subscription
-- Azure CLI installed and configured
+- [Azure CLI] (https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed and configured
 - A GitHub account (if you plan to fork the repository)
 
 ## Create Terrafom Storage Account
